@@ -43,3 +43,44 @@ footer{text-align:center;color:#82736d;font-size:12px;padding:25px}
 <button class="tile" onclick="show('Depo Adresleri','Alan, raf ve göz kodları burada yönetilecek. Örnek: A-01-02.')"><span class="emoji">🗂️</span><strong>Depo Adresleri</strong><small>Raf ve göz takibi</small></button>
 <button class="tile" onclick="show('İş Emirleri','Müşteri siparişi, üretilecek ürün, planlanan adet ve üretim durumu.')"><span class="emoji">🧾</span><strong>İş Emirleri</strong><small>Üretim planlama</small></button>
 <button class="tile" onclick="show('Üretim ve Dolum','
+</div>
+
+<div id="stock-panel" class="panel">
+  <h2>📦 Gerçek Stok Sorgulama</h2>
+
+  <label for="stock-search">Malzeme adı veya kodu</label>
+  <input
+    id="stock-search"
+    class="search"
+    placeholder="Örn. 100 ml şişe"
+  >
+
+  <button onclick="searchStock()">Stok Ara</button>
+
+  <div id="stock-result" class="notice" style="margin-top:12px">
+    Malzeme aramak için yukarıya adını veya kodunu yaz.
+  </div>
+</div>
+
+<script>
+async function searchStock() {
+  const query = document.getElementById("stock-search").value.trim();
+  const result = document.getElementById("stock-result");
+
+  if (!query) {
+    result.textContent = "Lütfen malzeme adı veya kodu gir.";
+    return;
+  }
+
+  result.textContent = "Stok aranıyor...";
+
+  // Supabase bağlantısını bir sonraki adımda ekleyeceğiz.
+  result.textContent =
+    "Arama hazır. Gerçek stok verileri için Supabase bağlantısı gerekiyor.";
+}
+</script>
+
+<footer>Nazeli Kozmetik • Depo ve Üretim Yönetimi</footer>
+</main>
+</body>
+</html>
