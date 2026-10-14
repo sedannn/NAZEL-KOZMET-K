@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nazeli Kozmetik</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f7f4f0;color:#292522}
+header{background:#572c35;color:white;padding:24px 20px;border-radius:0 0 22px 22px}
+header small{letter-spacing:2px;color:#ead4c9}
+header h1{margin:10px 0 5px;font-size:25px}
+header p{margin:0;color:#f0dfd8;font-size:13px}
+main{padding:18px;max-width:760px;margin:auto}
+h2{font-size:18px;margin:20px 0 12px}
+.search{width:100%;padding:14px;border:1px solid #ddd1c9;border-radius:12px;font-size:15px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.tile{background:white;border:1px solid #eee3dc;border-radius:15px;padding:17px 13px;min-height:115px;text-align:left;cursor:pointer;color:#292522}
+.tile .emoji{font-size:25px}
+.tile strong{display:block;margin:10px 0 5px;font-size:15px}
+.tile small{color:#777}
+.panel{background:white;padding:17px;border-radius:15px;margin-top:16px;border:1px solid #eee3dc}
+button{font:inherit}
+.notice{background:#f0e5dd;border-radius:10px;padding:12px;font-size:13px;line-height:1.5}
+footer{text-align:center;color:#82736d;font-size:12px;padding:25px}
+@media(min-width:600px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<header>
+<small>NAZELİ KOZMETİK</small>
+<h1>Depo ve Üretim Yönetimi</h1>
+<p>Malzeme • Üretim • Sevkiyat</p>
+</header>
+<main>
+<p id="today"></p>
+<input class="search" id="search" placeholder="🔎 Malzeme veya ürün ara..." oninput="searchTiles()">
+<h2>İşlem menüsü</h2>
+<div class="grid" id="tiles">
+<button class="tile" onclick="show('Stok Sorgulama','Malzeme kodu, müşteri, mevcut miktar ve raf adresi burada sorgulanacak.')"><span class="emoji">📦</span><strong>Stok Sorgulama</strong><small>Malzemeyi ve yerini bul</small></button>
+<button class="tile" onclick="show('Mal Kabulü','Gelen şişe, kapak, valf, etiket ve koli miktarları kaydedilecek.')"><span class="emoji">📥</span><strong>Mal Kabulü</strong><small>Depoya malzeme girişi</small></button>
+<button class="tile" onclick="show('Stok Çıkışı','Üretime verilen malzeme, miktar ve teslim alan kişi kaydedilecek.')"><span class="emoji">📤</span><strong>Stok Çıkışı</strong><small>Kim aldı, ne kadar aldı?</small></button>
+<button class="tile" onclick="show('Depo Adresleri','Alan, raf ve göz kodları burada yönetilecek. Örnek: A-01-02.')"><span class="emoji">🗂️</span><strong>Depo Adresleri</strong><small>Raf ve göz takibi</small></button>
+<button class="tile" onclick="show('İş Emirleri','Müşteri siparişi, üretilecek ürün, planlanan adet ve üretim durumu.')"><span class="emoji">🧾</span><strong>İş Emirleri</strong><small>Üretim planlama</small></button>
+<button class="tile" onclick="show('Üretim ve Dolum','
