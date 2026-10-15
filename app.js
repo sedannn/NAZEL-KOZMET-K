@@ -12,8 +12,9 @@ const TUM = Object.keys(ROL_ADI);
 // Menüyü sadece gösterimi belirler. Gerçek yetki kontrolü Supabase'deki kurallardadır.
 const MODULLER = [
   { ad: "Müşteriler ve Ürünler", ikon: "🏷️", alt: "Müşteri ve ürün kayıtları", roller: ["patron", "uretim_sorumlusu"], modul: () => window.MODUL_MUSTERI },
-  { ad: "Stok Sorgulama", ikon: "📦", alt: "Malzemeyi ve yerini bul", faz: 2, roller: ["patron", "depocu", "uretim_sorumlusu", "muhasebeci"] },
-  { ad: "Mal Kabulü ve Çıkış", ikon: "📥", alt: "Giriş, çıkış, iade, fire", faz: 3, roller: ["patron", "depocu"] },
+  { ad: "Malzeme ve Depo Adresleri", ikon: "🗂️", alt: "Malzeme kartları, raf adresleri", roller: ["patron", "depocu"], modul: () => window.MODUL_MALZEME },
+  { ad: "Stok Sorgulama", ikon: "📦", alt: "Malzemeyi ve yerini bul", faz: 2, roller: ["patron", "depocu", "uretim_sorumlusu", "muhasebeci"], modul: () => window.MODUL_STOK },
+  { ad: "Mal Kabulü (Giriş)", ikon: "📥", alt: "Depoya malzeme girişi", faz: 3, roller: ["patron", "depocu"], modul: () => window.MODUL_KABUL },
   { ad: "İş Emirleri", ikon: "🧾", alt: "Üretim planlama ve takip", faz: 4, roller: TUM, modul: () => window.MODUL_ISEMRI },
   { ad: "Üretim Talimatları", ikon: "📋", alt: "Ürüne özel ambalaj ve notlar", faz: 4, roller: TUM, modul: () => window.MODUL_URUN },
   { ad: "Kimyager / Karışım", ikon: "🧪", alt: "Reçete ve esans hazırlama", faz: 5, roller: ["patron", "kimyager"] },
