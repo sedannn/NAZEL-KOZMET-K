@@ -82,14 +82,40 @@ window.MODUL_ISEMRI = {
       await yenile(); await detay(id);
     }
 
+    function uretimFormu(id) {
+      const anahtar = crypto.randomUUID();
+      const sayi = () => el("input", { type: "number", min: 0, step: 1, inputMode: "numeric" });
+      const ad = sayi(), koli = sayi(), palet = sayi(), fire = sayi(), num = sayi();
+      const son = el("input", { type: "checkbox" }), ac = el("input");
+      ad.required = true;
+      const f = el("form", { className: "kart-form" }, el("h3", {}, "Üretim sonucu gir"),
+        alan("Üretilen adet", ad), alan("Koli sayısı", koli), alan("Palet sayısı", palet), alan("Fire adedi", fire),
+        alan("Numune adedi (sıkım testi)", num), alan("Açıklama", ac),
+        el("label", { className: "onay" }, son, " Üretim bitti (son kayıt)"), el("button", { type: "submit" }, "Kaydet"));
+      f.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        if (!confirm("Girilen sayılar doğru mu? Kayıt sonradan değiştirilemez, sadece iptal edilebilir.")) return;
+        const { error } = await sb.from("is_emri_uretim").insert({ islem_anahtari: anahtar, is_emri_id: id,
+          uretilen_adet: Number(ad.value), koli_sayisi: Number(koli.value || 0), palet_sayisi: Number(palet.value || 0),
+          fire_adet: Number(fire.value || 0), numune_adet: Number(num.value || 0), son_kayit: son.checked,
+          aciklama: ac.value.trim() || null });
+        if (error) return bildir(error.code === "23505" ? "Bu kayıt zaten girilmiş." : hataMetni(error));
+        bildir("Üretim sonucu kaydedildi.");
+        detay(id);
+      });
+      return f;
+    }
+
     async function detay(id) {
       detayKap.replaceChildren();
       const ie = isler.find((x) => x.id === id);
       if (!ie) return;
-      const [a, es, at] = await Promise.all([
+      const [a, es, at, ur] = await Promise.all([
         sb.from("is_emri_ambalaj").select("tur, aciklama").eq("is_emri_id", id).order("sira"),
         esansGorur ? sb.from("is_emri_esans").select("esans_kodu, esans_orani, esans_kg").eq("is_emri_id", id).maybeSingle() : { data: null },
-        rol === "patron" ? sb.from("is_emri_atamalari").select("kullanici_id, profiller(ad_soyad, kullanici_adi)").eq("is_emri_id", id) : { data: null }
+        rol === "patron" ? sb.from("is_emri_atamalari").select("kullanici_id, profiller(ad_soyad, kullanici_adi)").eq("is_emri_id", id) : { data: null },
+        sb.from("is_emri_uretim").select("id, uretilen_adet, koli_sayisi, palet_sayisi, fire_adet, numune_adet, son_kayit, aciklama, zaman, iptal, iptal_nedeni, profiller(ad_soyad, kullanici_adi)")
+          .eq("is_emri_id", id).order("zaman")
       ]);
       const satirlar = [["Müşteri", ie.musteriler && ie.musteriler.ad], ["Marka", ie.marka], ["Sipariş kodu", ie.siparis_kodu],
         ["Parti numarası", ie.parti_no], ["Planlanan adet", ie.planlanan_adet], ["Teslim tarihi", ie.teslim_tarihi ? tarih(ie.teslim_tarihi) : null],
@@ -103,6 +129,40 @@ window.MODUL_ISEMRI = {
       if (a.error || !a.data.length) am.append(el("p", { className: "bos" }, "Ambalaj bileşeni girilmemiş."));
       else for (const x of a.data) am.append(el("div", { className: "satir" }, el("div", {}, el("strong", {}, TUR[x.tur] || x.tur), el("small", {}, x.aciklama))));
       detayKap.append(el("h2", {}, "Ambalaj ve malzemeler"), am);
+
+      detayKap.append(el("h2", {}, "Üretim sonucu"));
+      if (ur.error) detayKap.append(el("p", { className: "bos" }, "Üretim kayıtları yüklenemedi: " + ur.error.message));
+      else {
+        const kay = ur.data, gecerli = kay.filter((x) => !x.iptal);
+        const topla = (k) => gecerli.reduce((t, x) => t + x[k], 0);
+        const toplam = topla("uretilen_adet");
+        detayKap.append(el("div", { className: "kart-form" }, el("h3", {}, "Toplam"),
+          el("p", {}, "Planlanan: " + ie.planlanan_adet + " • Üretilen: " + toplam + " • Fark: " + (toplam - ie.planlanan_adet)),
+          el("p", {}, "Koli: " + topla("koli_sayisi") + " • Palet: " + topla("palet_sayisi") + " • Fire: " + topla("fire_adet") + " • Numune: " + topla("numune_adet")),
+          gecerli.some((x) => x.son_kayit) ? el("span", { className: "rozet" }, "Üretim bitti bildirildi") : ""));
+        const lst = el("div", { className: "liste" });
+        if (!kay.length) lst.append(el("p", { className: "bos" }, "Henüz üretim kaydı girilmemiş."));
+        for (const x of kay) {
+          const kim = x.profiller ? (x.profiller.ad_soyad || x.profiller.kullanici_adi) : "Çalışan";
+          let sag = "";
+          if (olusturur && !x.iptal) {
+            sag = el("button", { type: "button", className: "ikincil-koyu" }, "İptal et");
+            sag.addEventListener("click", async () => {
+              const neden = prompt("İptal nedeni:");
+              if (!neden || !neden.trim()) return;
+              const { error } = await sb.from("is_emri_uretim").update({ iptal: true, iptal_nedeni: neden.trim() }).eq("id", x.id);
+              if (error) return bildir(hataMetni(error));
+              detay(id);
+            });
+          }
+          lst.append(el("div", { className: "satir" + (x.iptal ? " pasif" : "") }, el("div", {},
+            el("strong", {}, x.uretilen_adet + " adet • " + x.koli_sayisi + " koli • " + x.palet_sayisi + " palet" + (x.son_kayit ? " • SON KAYIT" : "")),
+            el("small", {}, kim + " • " + new Date(x.zaman).toLocaleString("tr-TR") + " • fire " + x.fire_adet + " • numune " + x.numune_adet
+              + (x.aciklama ? " • " + x.aciklama : "") + (x.iptal ? " • İPTAL: " + x.iptal_nedeni : ""))), sag));
+        }
+        detayKap.append(lst);
+        if (["patron", "uretim_sorumlusu", "uretim_calisani"].includes(rol) && ie.durum === "uretimde") detayKap.append(uretimFormu(id));
+      }
 
       if (esansGorur) {
         const d = es.data;

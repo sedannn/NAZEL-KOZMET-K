@@ -46,3 +46,6 @@ textarea{width:100%;padding:13px;border:1px solid var(--cizgi);border-radius:10p
 .satir-btn{width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer}
 .kart-form label{margin:4px 0 0;font-size:13px;font-weight:600}
 .rozet{display:inline-block;background:#efe6e9;color:var(--bordo);border-radius:20px;padding:2px 10px;font-size:12px;margin-top:6px}
+
+input[type=checkbox]{width:auto}
+.onay{display:flex;align-items:center;gap:8px;font-size:15px!important;margin:6px 0!important}
