@@ -28,3 +28,14 @@ h2{font-size:18px;margin:6px 0 14px}
 .tile em{display:block;margin-top:6px;font-style:normal;font-size:12px;color:var(--bordo)}
 .bilgi{background:#efe6e9;border-radius:10px;padding:12px;font-size:14px;margin-top:16px}
 @media(min-width:640px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+.kart-form{background:#fff;border:1px solid var(--cizgi);border-radius:12px;padding:14px;display:grid;gap:10px;margin-bottom:14px}
+.kart-form h3{margin:0;font-size:15px}
+.kart-form button{padding:12px;border:0;border-radius:10px;background:var(--bordo);color:#fff;font-weight:600}
+select{width:100%;padding:13px;border:1px solid var(--cizgi);border-radius:10px;font:inherit;font-size:16px;background:#fff}
+.liste{display:grid;gap:8px;margin-bottom:22px}
+.satir{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#fff;border:1px solid var(--cizgi);border-radius:10px;padding:12px}
+.satir small{display:block;color:var(--soluk);margin-top:2px}
+.satir.pasif{opacity:.55}
+.ikincil-koyu{background:transparent;border:1px solid var(--cizgi);border-radius:8px;padding:8px 10px;font-size:13px;color:var(--yazi);white-space:nowrap}
+.bos{color:var(--soluk);font-size:14px}

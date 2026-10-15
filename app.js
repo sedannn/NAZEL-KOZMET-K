@@ -1,6 +1,7 @@
 const C = window.NAZELI_CONFIG;
 const sb = supabase.createClient(C.SUPABASE_URL, C.SUPABASE_ANAHTAR);
 const $ = (id) => document.getElementById(id);
+let PROFIL = null;
 
 const ROL_ADI = {
   patron: "Yönetici", kimyager: "Kimyager", uretim_calisani: "Üretim Çalışanı",
@@ -10,6 +11,7 @@ const TUM = Object.keys(ROL_ADI);
 
 // Menüyü sadece gösterimi belirler. Gerçek yetki kontrolü Supabase'deki kurallardadır.
 const MODULLER = [
+  { ad: "Müşteriler ve Ürünler", ikon: "🏷️", alt: "Müşteri ve ürün kayıtları", roller: ["patron", "uretim_sorumlusu"], modul: () => window.MODUL_MUSTERI },
   { ad: "Stok Sorgulama", ikon: "📦", alt: "Malzemeyi ve yerini bul", faz: 2, roller: ["patron", "depocu", "uretim_sorumlusu", "muhasebeci"] },
   { ad: "Mal Kabulü ve Çıkış", ikon: "📥", alt: "Giriş, çıkış, iade, fire", faz: 3, roller: ["patron", "depocu"] },
   { ad: "İş Emirleri", ikon: "🧾", alt: "Üretim planlama", faz: 4, roller: TUM },
@@ -21,11 +23,12 @@ const MODULLER = [
 ];
 
 function goster(id) {
-  for (const x of ["yukleniyor", "giris", "uygulama"]) $(x).classList.toggle("hidden", x !== id);
+  for (const x of ["yukleniyor", "giris", "uygulama", "modul"]) $(x).classList.toggle("hidden", x !== id);
 }
 function girisHata(m) { $("giris-hata").textContent = m || ""; }
 
 function menuCiz(profil) {
+  PROFIL = profil;
   $("kullanici-bilgi").textContent = (profil.ad_soyad || profil.kullanici_adi || "") + " • " + (ROL_ADI[profil.rol] || profil.rol);
   const kap = $("moduller");
   kap.replaceChildren();
@@ -36,9 +39,10 @@ function menuCiz(profil) {
     const ikon = document.createElement("span"); ikon.className = "ikon"; ikon.textContent = m.ikon;
     const ad = document.createElement("strong"); ad.textContent = m.ad;
     const alt = document.createElement("small"); alt.textContent = m.alt;
-    const durum = document.createElement("em"); durum.textContent = "Henüz eklenmedi";
+    const durum = document.createElement("em"); durum.textContent = m.modul ? "Aç" : "Henüz eklenmedi";
     b.append(ikon, ad, alt, durum);
-    b.addEventListener("click", () => {
+    b.addEventListener("click", async () => {
+      if (m.modul) { await modulAc(m); return; }
       const bilgi = $("bilgi");
       bilgi.textContent = m.ad + " ekranı henüz hazır değil. Planda " + m.faz + ". aşamada eklenecek.";
       bilgi.classList.remove("hidden");
@@ -83,6 +87,16 @@ $("cikis").addEventListener("click", async () => {
   await sb.auth.signOut();
   goster("giris");
 });
+
+async function modulAc(m) {
+  $("modul-baslik").textContent = m.ad;
+  const kap = $("modul-icerik");
+  kap.replaceChildren();
+  goster("modul");
+  try { await m.modul().ac(kap, PROFIL, sb); }
+  catch (err) { kap.textContent = "Ekran açılamadı: " + err.message; }
+}
+$("modul-geri").addEventListener("click", () => goster("uygulama"));
 
 (async function baslat() {
   try {
