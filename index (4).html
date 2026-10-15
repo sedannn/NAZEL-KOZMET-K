@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nazeli Kozmetik</title>
+<link rel="stylesheet" href="stil.css">
+</head>
+<body>
+<section id="yukleniyor" class="orta"><p>Yükleniyor...</p></section>
+
+<section id="giris" class="orta hidden">
+  <form id="giris-form" class="kart">
+    <h1>Nazeli Kozmetik</h1>
+    <p class="alt">Depo ve Üretim Yönetimi</p>
+    <label for="kadi">Kullanıcı adı</label>
+    <input id="kadi" autocomplete="username" autocapitalize="none" autocorrect="off" required>
+    <label for="sifre">Şifre</label>
+    <input id="sifre" type="password" autocomplete="current-password" required>
+    <button type="submit" id="giris-btn">Giriş yap</button>
+    <p id="giris-hata" class="hata" role="alert"></p>
+  </form>
+</section>
+
+<section id="uygulama" class="hidden">
+  <header>
+    <div>
+      <h1>Nazeli Kozmetik</h1>
+      <p id="kullanici-bilgi"></p>
+    </div>
+    <button id="cikis" class="ikincil">Çıkış yap</button>
+  </header>
+  <main>
+    <h2>İşlem menüsü</h2>
+    <div class="grid" id="moduller"></div>
+    <p id="bilgi" class="bilgi hidden" role="status"></p>
+  </main>
+</section>
+
+<section id="modul" class="hidden">
+  <header>
+    <div><h1 id="modul-baslik"></h1><p>Nazeli Kozmetik</p></div>
+    <button id="modul-geri" class="ikincil">← Menü</button>
+  </header>
+  <main id="modul-icerik"></main>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="config.js"></script>
+<script src="musteri.js"></script>
+<script src="urun.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
