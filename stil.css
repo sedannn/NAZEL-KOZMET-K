@@ -39,3 +39,6 @@ select{width:100%;padding:13px;border:1px solid var(--cizgi);border-radius:10px;
 .satir.pasif{opacity:.55}
 .ikincil-koyu{background:transparent;border:1px solid var(--cizgi);border-radius:8px;padding:8px 10px;font-size:13px;color:var(--yazi);white-space:nowrap}
 .bos{color:var(--soluk);font-size:14px}
+
+textarea{width:100%;padding:13px;border:1px solid var(--cizgi);border-radius:10px;font:inherit;font-size:16px}
+.not{white-space:pre-wrap}
