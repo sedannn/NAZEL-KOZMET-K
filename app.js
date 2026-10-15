@@ -14,7 +14,7 @@ const MODULLER = [
   { ad: "Müşteriler ve Ürünler", ikon: "🏷️", alt: "Müşteri ve ürün kayıtları", roller: ["patron", "uretim_sorumlusu"], modul: () => window.MODUL_MUSTERI },
   { ad: "Stok Sorgulama", ikon: "📦", alt: "Malzemeyi ve yerini bul", faz: 2, roller: ["patron", "depocu", "uretim_sorumlusu", "muhasebeci"] },
   { ad: "Mal Kabulü ve Çıkış", ikon: "📥", alt: "Giriş, çıkış, iade, fire", faz: 3, roller: ["patron", "depocu"] },
-  { ad: "İş Emirleri", ikon: "🧾", alt: "Üretim planlama", faz: 4, roller: TUM },
+  { ad: "İş Emirleri", ikon: "🧾", alt: "Üretim planlama ve takip", faz: 4, roller: TUM, modul: () => window.MODUL_ISEMRI },
   { ad: "Üretim Talimatları", ikon: "📋", alt: "Ürüne özel ambalaj ve notlar", faz: 4, roller: TUM, modul: () => window.MODUL_URUN },
   { ad: "Kimyager / Karışım", ikon: "🧪", alt: "Reçete ve esans hazırlama", faz: 5, roller: ["patron", "kimyager"] },
   { ad: "Üretim ve Dolum", ikon: "🧴", alt: "Adet, fire, numune", faz: 6, roller: ["patron", "uretim_sorumlusu", "uretim_calisani"] },
